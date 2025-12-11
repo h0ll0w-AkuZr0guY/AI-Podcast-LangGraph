@@ -1,0 +1,7 @@
+# 配置文件
+.env
+__pycache__/
+.trae/
+
+# 测试目录
+test/

@@ -1,0 +1,11 @@
+# Core Dependencies
+openai
+dashscope
+requests
+python-dotenv
+pyaudio
+
+# Optional Dependencies
+# For future enhancements
+# langgraph
+# pydantic
