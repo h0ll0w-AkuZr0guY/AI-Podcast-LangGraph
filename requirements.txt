@@ -1,7 +1,6 @@
 # Core Dependencies
 openai
 dashscope
-requests
 python-dotenv
 pyaudio
 
