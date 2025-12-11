@@ -5,3 +5,6 @@ __pycache__/
 
 # 测试目录
 test/
+
+# 结果目录
+results/
