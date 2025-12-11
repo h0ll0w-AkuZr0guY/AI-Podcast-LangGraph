@@ -2,6 +2,7 @@ import os
 from datetime import datetime
 from src.text_processing import TextProcessor
 from src.tts_service import TTSService
+import src.config as config
 
 class BlogGenerator:
     def __init__(self):
@@ -37,7 +38,7 @@ class BlogGenerator:
         
         # 3. 保存博客文本到文件
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        blog_file = f"blog_{timestamp}.md"
+        blog_file = f"{config.RESULTS_DIR}/blog_{timestamp}.md"
         
         with open(blog_file, "w", encoding="utf-8") as f:
             f.write(f"# {topic}\n\n")
@@ -49,15 +50,15 @@ class BlogGenerator:
         audio_file = None
         if with_tts:
             print("正在生成语音文件...")
-            audio_file = f"audio_{timestamp}.wav"
+            audio_file = f"{config.RESULTS_DIR}/audio_{timestamp}.wav"
             self.tts_service.text_to_speech(polished_text, audio_file)
         
         return {
             "topic": topic,
             "original_text": original_text,
             "polished_text": polished_text,
-            "blog_file": blog_file,
-            "audio_file": audio_file
+            "blog_file": f"{config.RESULTS_DIR}/{blog_file}",
+            "audio_file": f"{config.RESULTS_DIR}/{audio_file}" if audio_file else None
         }
     
     def polish_and_tts(self, original_text: str, polish_type: str = "blog", output_file: str = None) -> dict:
@@ -79,15 +80,16 @@ class BlogGenerator:
         # 2. 生成语音文件
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         if not output_file:
-            output_file = f"audio_{timestamp}.wav"
+            output_file = f"{config.RESULTS_DIR}/audio_{timestamp}.wav"
         
         print("正在生成语音文件...")
         success = self.tts_service.text_to_speech(polished_text, output_file)
+        audio_file = f"{output_file}" if success else None
         
         return {
             "original_text": original_text,
             "polished_text": polished_text,
-            "audio_file": output_file if success else None,
+            "audio_file": audio_file,
             "success": success
         }
     
@@ -103,11 +105,11 @@ class BlogGenerator:
             包含处理结果的字典
         """
         # 1. 读取博客文件
-        if not os.path.exists(blog_file):
+        if not os.path.exists(f"{blog_file}"):
             print(f"错误：文件 '{blog_file}' 不存在")
             return {"success": False, "error": "文件不存在"}
         
-        with open(blog_file, "r", encoding="utf-8") as f:
+        with open(f"{blog_file}", "r", encoding="utf-8") as f:
             original_text = f.read()
         
         # 2. 提取主题（从标题中）
@@ -123,10 +125,10 @@ class BlogGenerator:
         polished_text = self.text_processor.polish_text(original_text, "blog")
         
         # 4. 保存润色后的博客
-        base_name = os.path.splitext(blog_file)[0]
+        base_name = os.path.splitext(f"{blog_file}")[0]
         polished_blog_file = f"{base_name}_polished.md"
         
-        with open(polished_blog_file, "w", encoding="utf-8") as f:
+        with open(f"{polished_blog_file}", "w", encoding="utf-8") as f:
             f.write(polished_text)
         
         print(f"润色后的博客已保存至: {polished_blog_file}")
@@ -140,9 +142,9 @@ class BlogGenerator:
         
         return {
             "topic": topic,
-            "original_file": blog_file,
-            "polished_file": polished_blog_file,
-            "audio_file": audio_file,
+            "original_file": f"{blog_file}",
+            "polished_file": f"{polished_blog_file}",
+            "audio_file": f"{audio_file}" if audio_file else None,
             "success": True
         }
 

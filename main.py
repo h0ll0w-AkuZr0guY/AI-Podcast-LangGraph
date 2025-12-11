@@ -1,4 +1,5 @@
 from src.blog_generator import BlogGenerator
+import src.config as config
 
 def display_menu():
     """
