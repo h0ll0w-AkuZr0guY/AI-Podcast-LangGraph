@@ -2,9 +2,8 @@
 openai
 dashscope
 python-dotenv
-pyaudio
+langgraph
 
 # Optional Dependencies
 # For future enhancements
-# langgraph
 # pydantic
